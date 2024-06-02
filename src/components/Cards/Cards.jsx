@@ -5,6 +5,7 @@ import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { useParams } from "react-router-dom";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -41,6 +42,11 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const { mode } = useParams();
+
+  const [attempts, setAttempts] = useState(3);
+  const [isCardsOpened, setIsCardsOpened] = useState(false);
+
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -83,55 +89,65 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
    * - "Игра продолжается", если не случилось первых двух условий
    */
   const openCard = clickedCard => {
-    // Если карта уже открыта, то ничего не делаем
-    if (clickedCard.open) {
-      return;
-    }
-    // Игровое поле после открытия кликнутой карты
-    const nextCards = cards.map(card => {
-      if (card.id !== clickedCard.id) {
-        return card;
-      }
+    if (isCardsOpened || clickedCard.open) return;
 
-      return {
-        ...card,
-        open: true,
-      };
-    });
+    const updatedCards = cards.map(card => (card.id === clickedCard.id ? { ...card, open: true } : card));
+    setCards(updatedCards);
 
-    setCards(nextCards);
-
-    const isPlayerWon = nextCards.every(card => card.open);
-
-    // Победа - все карты на поле открыты
-    if (isPlayerWon) {
+    if (updatedCards.every(card => card.open)) {
       finishGame(STATUS_WON);
       return;
     }
 
-    // Открытые карты на игровом поле
-    const openCards = nextCards.filter(card => card.open);
+    const openCards = updatedCards.filter(card => card.open);
 
-    // Ищем открытые карты, у которых нет пары среди других открытых
     const openCardsWithoutPair = openCards.filter(card => {
       const sameCards = openCards.filter(openCard => card.suit === openCard.suit && card.rank === openCard.rank);
-
-      if (sameCards.length < 2) {
-        return true;
-      }
-
-      return false;
+      return sameCards.length < 2;
     });
 
-    const playerLost = openCardsWithoutPair.length >= 2;
-
-    // "Игрок проиграл", т.к на поле есть две открытые карты без пары
-    if (playerLost) {
-      finishGame(STATUS_LOST);
+    if (mode === "easy-mode") {
+      handleEasyMode(openCardsWithoutPair, updatedCards);
       return;
     }
 
-    // ... игра продолжается
+    if (openCardsWithoutPair.length >= 2) {
+      finishGame(STATUS_LOST);
+    }
+  };
+
+  const handleEasyMode = (openCardsWithoutPair, updatedCards) => {
+    if (openCardsWithoutPair.length < 2) return;
+
+    if (openCardsWithoutPair.length === 2) {
+      setIsCardsOpened(true);
+    }
+
+    const nextCards = toggleCardsOpenStatus(updatedCards, openCardsWithoutPair, true);
+    setCards(nextCards);
+
+    setTimeout(() => {
+      const nextCards = toggleCardsOpenStatus(updatedCards, openCardsWithoutPair, false);
+      setCards(nextCards);
+      setIsCardsOpened(false);
+    }, 1000);
+
+    if (attempts === 1) {
+      finishGame(STATUS_LOST);
+      setAttempts(3);
+      return;
+    }
+
+    setAttempts(prev => prev - 1);
+  };
+
+  const toggleCardsOpenStatus = (currentCards, targetCards, openStatus) => {
+    return currentCards.map(card => {
+      if (card.id === targetCards[0].id || card.id === targetCards[1].id) {
+        return { ...card, open: openStatus };
+      }
+      return card;
+    });
   };
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
@@ -209,6 +225,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         ))}
       </div>
+
+      {mode === "easy-mode" ? <div className={styles.statusText}>Осталось {attempts} попытки</div> : ""}
 
       {isGameEnded ? (
         <div className={styles.modalContainer}>

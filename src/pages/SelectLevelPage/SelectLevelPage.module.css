@@ -43,7 +43,6 @@
   flex-direction: column;
   justify-content: center;
   flex-shrink: 0;
-
   border-radius: 12px;
   background: #fff;
 }
@@ -61,4 +60,8 @@
 
 .levelLink:visited {
   color: #0080c1;
+}
+
+.levelLink:hover {
+  color: #004980;
 }
