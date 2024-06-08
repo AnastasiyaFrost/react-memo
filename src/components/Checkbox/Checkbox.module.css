@@ -16,6 +16,7 @@
     user-select: none;
     font-family: StratosSkyeng;
     font-size: 25px;
+    margin-bottom: 20px;
 }
 
 .input+label:hover {

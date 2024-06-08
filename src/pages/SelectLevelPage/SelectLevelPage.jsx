@@ -2,13 +2,18 @@ import { Link } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
 import { Checkbox } from "../../components/Checkbox/Checkbox";
 import { useState } from "react";
+import { Button } from "../../components/Button/Button";
 
 const levels = [3, 6, 9];
 
 export function SelectLevelPage() {
   const [isEasyMode, setIsEasyMode] = useState(false);
-
+  let selectedLevel = 0;
+  // function levelHandle(index) {
+  //   selectedLevel = levels[index];
+  // }
   const easyPath = isEasyMode ? "/easy-mode" : "";
+
   return (
     <div className={styles.container}>
       <div className={styles.modal}>
@@ -16,9 +21,7 @@ export function SelectLevelPage() {
         <ul className={styles.levels}>
           {levels.map((level, index) => (
             <li className={styles.level} key={level}>
-              <Link className={styles.levelLink} to={`/game/${level}${easyPath}`}>
-                {index + 1}
-              </Link>
+              {index + 1}
             </li>
           ))}
         </ul>
@@ -30,6 +33,9 @@ export function SelectLevelPage() {
             setIsEasyMode(prev => !prev);
           }}
         ></Checkbox>
+        <Link to={`/game/${selectedLevel}${easyPath}`}>
+          <Button>Начать игру</Button>
+        </Link>
       </div>
     </div>
   );

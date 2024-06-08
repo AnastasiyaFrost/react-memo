@@ -45,9 +45,6 @@
   flex-shrink: 0;
   border-radius: 12px;
   background: #fff;
-}
-
-.levelLink {
   color: #0080c1;
   text-align: center;
   font-family: StratosSkyeng;
@@ -57,11 +54,11 @@
   line-height: 72px;
   text-decoration: none;
 }
-
+/* 
 .levelLink:visited {
   color: #0080c1;
-}
+} */
 
-.levelLink:hover {
+.level:hover {
   color: #004980;
 }
