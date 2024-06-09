@@ -8,7 +8,7 @@ const levels = [3, 6, 9];
 
 export function SelectLevelPage() {
   const [isEasyMode, setIsEasyMode] = useState(false);
-  let selectedLevel = 0;
+  const [selectedLevel, setSelectedLevel] = useState(3);
   // function levelHandle(index) {
   //   selectedLevel = levels[index];
   // }
@@ -20,7 +20,13 @@ export function SelectLevelPage() {
         <h1 className={styles.title}>Выбери сложность</h1>
         <ul className={styles.levels}>
           {levels.map((level, index) => (
-            <li className={styles.level} key={level}>
+            <li
+              className={styles.level}
+              key={level}
+              onClick={() => {
+                setSelectedLevel(level);
+              }}
+            >
               {index + 1}
             </li>
           ))}
