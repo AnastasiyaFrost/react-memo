@@ -1,0 +1,59 @@
+.container {
+  width: 50%;
+  position: relative;
+  justify-content: center;
+  min-height: 100%;
+  margin: 30px 25%;
+}
+
+.title {
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+  text-align: left;
+  width: 127px;
+  height: 32px;
+  top: 61px;
+  left: 40px;
+  gap: 0px;
+  opacity: 0px;
+  color: white;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.block {
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 12px;
+  margin: 5px;
+  height: 30px;
+  align-items: center;
+}
+.firstline {
+  color: gainsboro;
+}
+
+.name {
+  padding-bottom: 15px;
+}
+
+.name01 {
+  width: 45%;
+  padding-left: 15px;
+}
+
+.name02 {
+  width: 45%;
+}
+
+.name03 {
+  width: 10%;
+  padding-right: 15px;
+}

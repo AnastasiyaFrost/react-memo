@@ -62,3 +62,6 @@
 .level:hover {
   color: #004980;
 }
+p {
+  margin-top: 20px;
+}
